@@ -52,5 +52,25 @@ object Lab2 {
     val training = assembler.transform(train).select(col("features"), col("Late").alias("label"))
 
     training.show()
+
+//    Train a Classification Model
+//      Next, you need to train a classification model using the training data. To do this, create an instance of the classification algorithm you want to use and use its fit method to train a model based on the training DataFrame. In this exercise, you will use a Logistic Regression classification algorithm - though you can use the same technique for any of the classification algorithms supported in the spark.ml API.
+
+    val lr = new LogisticRegression().setLabelCol("label").setFeaturesCol("features").setMaxIter(10).setRegParam(0.3)
+    val model = lr.fit(training)
+    println ("Model trained!")
+
+//    Prepare the Testing Data
+//      Now that you have a trained model, you can test it using the testing data you reserved previously. First, you need to prepare the testing data in the same way as you did the training data by transforming the feature columns into a vector. This time you'll rename the Late column to trueLabel.
+    val testing = assembler.transform(test).select(col("features"), col("Late").alias("trueLabel"))
+    testing.show()
+
+//    Test the Model¶
+//    Now you're ready to use the transform method of the model to generate some predictions. You can use this approach to predict delay status for flights where the label is unknown; but in this case you are using the test data which includes a known true label value, so you can compare the predicted status to the actual status.
+
+    val prediction = model.transform(testing)
+    val predicted = prediction.select("features", "prediction", "probability", "trueLabel")
+    predicted.show(100)
+
   }
 }
