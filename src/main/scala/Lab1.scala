@@ -11,7 +11,7 @@ object DemoScala {
     val spark = SparkSession
       .builder()
       .master("local")
-      .appName("Spark SQL basic example")
+      .appName("Exploring data with spark")
       .getOrCreate()
 
     //Load Data Using an Explicit Schema
